@@ -12,15 +12,30 @@ void Usage(int argc, char* argv[]) {
 }
 
 void Program(int argc, char* argv[]) {
-  std::ofstream file(argv[1], std::ios::app);
+  std::ifstream input_file(argv[1]);
   std::string line;
-  if (!file.is_open()) {
-    std::cerr << "File could not be opened!" << std::endl;
-    exit(EXIT_FAILURE);
+  bool is_empty = input_file.peek() == std::ifstream::traits_type::eof();
+  if (is_empty) {
+    std::ofstream output_file(argv[1]);
+    if (!output_file.is_open()) {
+      std::cerr << "File could not be opened!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    for (int i = 2; i < argc; ++i) {
+      line += std::string(argv[i]) + " ";
+    }
+    output_file << line << std::endl;
+    output_file.close();
+  } else {
+    std::ofstream output_file(argv[1], std::ios::app);
+    if (!output_file.is_open()) {
+      std::cerr << "File could not be opened!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    for (int i = 2; i < argc; ++i) {
+      line += std::string(argv[i]) + " ";
+    }
+    output_file << line << std::endl;
+    output_file.close();
   }
-  for (int i = 2; i < argc; ++i) {
-    line += std::string(argv[i]) + " ";
-  }
-  file << line << std::endl;
-  file.close();
 }
